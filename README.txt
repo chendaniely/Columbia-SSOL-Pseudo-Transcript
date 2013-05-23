@@ -1,5 +1,5 @@
 # This is my README
-
+# adding this line of text to test eGit in staging view
 your input.txt file should look something like this
 
 Menu | Help | Comments | Logout  
