@@ -6,20 +6,29 @@ Created on May 22, 2013
 import linecache
 
 #takes a list of credit points and letter grades and calculates the GPA for those pairs
-def calculateGpa (points, grade):
+def calculateGpa (points, grades):
+    totalPoints = 0
+    gradePoints = 0
     gpa = -1
     length = int(len(points))
-    if len(points) != len(grade):
+    if len(points) != len(grades):
         print 'the number of points does not equal the number of grades!'
     
     for index in range(length):
-        print index
+        print 'calculateGPA: index={} points={}, letter2number={}'.format(index, points[index], letter2number(grades[index]))
+        totalPoints += points[index]
+        print 'points * grade = ', float(points[index])*float(letter2number(grades[index]))
+        gradePoints = gradePoints + float(points[index])*float(letter2number(grades[index]))
+    print 'totalPoints = ', totalPoints
+    print 'gradePoints = ', gradePoints
+    gpa = gradePoints/totalPoints
+    print 'gpa = ', gpa
     return gpa
 
 #converts a letter grade into a number for calculation
 def letter2number (letter):
     letterGrade = str(letter).lower()
-    print letterGrade
+    #print 'letter2number: input received = ', letterGrade
     if letterGrade == 'a+':
         return 4.33
     if letterGrade == 'a':
@@ -117,5 +126,8 @@ print '\n=========\n'
 
 points = [1.50,5.00]
 grades = ['B-', 'B+']
-print letter2number(grades[0])
+print 'letter2number index 0: ', letter2number(grades[0])
+
+print '\n=========\n'
+
 calculateGpa(points, grades)
