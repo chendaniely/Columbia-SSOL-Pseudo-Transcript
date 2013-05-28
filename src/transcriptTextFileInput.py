@@ -6,6 +6,7 @@ Created on May 22, 2013
 import linecache
 
 #takes a list of credit points and letter grades and calculates the GPA for those pairs
+#assumes point-grade pair are in the same index of the 2 lists
 def calculateGpa (points, grades):
     totalPoints = 0
     gradePoints = 0
@@ -16,7 +17,7 @@ def calculateGpa (points, grades):
     
     for index in range(length):
         print 'calculateGPA: index={} points={}, letter2number={}'.format(index, points[index], letter2number(grades[index]))
-        totalPoints += points[index]
+        totalPoints += float(points[index])
         print 'points * grade = ', float(points[index])*float(letter2number(grades[index]))
         gradePoints = gradePoints + float(points[index])*float(letter2number(grades[index]))
     print 'totalPoints = ', totalPoints
@@ -56,7 +57,7 @@ def letter2number (letter):
         print 'letter2number: I did not program for a letter grade'
 
 #headingTitle = ['callNum', 'dept', 'number', 'section', 'points', 'title', 'grade']
-
+validLetterGrades = ['a+','a','a-','b+','b','b-','c+','c','c-','f']
 '''
 opens the input.txt file, goes through it line by line to look for where the grades are located
 saves the line grades are located in gradeLine
@@ -105,16 +106,38 @@ print '\n\n\n\n'
 #classDpt list stores the unique departments in order of appearance
 classDpt = []
 numClassDpt = 1
+
+allPoints = []
+allGrades = []
+allGradesConvert = [] #do not need
+
 #print 'print classDpt: ', classDpt
 for lineNum in gradeLine:
     #gets the entire line where grade information was found (gradeLine)
     line = linecache.getline('input.txt', lineNum)
     print 'line number {:2d}: {}'.format(lineNum, str(line))
     #print 'print classDpt loop: ', classDpt
+    
+    '''
+    for every line of classes, see what department the class is from and add it to classDpt if it is unique
+    '''
     if linecache.getline('input.txt', lineNum).split('\t')[1] not in classDpt:
         #print 'i did not find {} in here, so i am adding it'.format(linecache.getline('input.txt', lineNum).split('\t')[1])
         numClassDpt += 1
         classDpt.append(linecache.getline('input.txt', lineNum).split('\t')[1])
+    
+    '''
+    for ever line of classes, add the credits and grades to be calculated for overall gpa into separate lists
+    if the grade is a 'p' or empty, skip
+    '''
+    print 'point number pair: ', line.split('\t')[4], line.split('\t')[6]
+    if line.split('\t')[6].rstrip('\n').lower() in validLetterGrades:
+        allPoints.append(line.split('\t')[4])
+        allGrades.append(line.split('\t')[6].rstrip('\n'))
+        allGradesConvert.append(letter2number(line.split('\t')[6].rstrip('\n')))
+    else:
+        continue
+        
 print 'final classDpt: ', classDpt
 
 print '\n\nSummary:'
@@ -130,4 +153,14 @@ print 'letter2number index 0: ', letter2number(grades[0])
 
 print '\n=========\n'
 
+print 'testing calculateGPA using points = {} and grades = {}'.format(points, grades)
 calculateGpa(points, grades)
+
+print '\n=========\n'
+
+print 'testing overall gpa calculations'
+print allPoints
+print allGrades
+print allGradesConvert #do not need
+
+calculateGpa(allPoints,allGrades)
