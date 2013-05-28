@@ -191,29 +191,28 @@ def guiInput():
                 #print '\tlength: ', len(line.split('\t'))
                 #all the grade grade lines have 7 parts separated by tabs, can be a header or a grade
                 if len(line.split('\t')) == 7:
-                    if line.split('\t')[0].lower() == 'call#': #this is a header
+                    #if line.split('\t')[0].lower() == 'call#': #this is a header
                         #print '\tthis is header'
-                    else: #i found a set of grades!
-                        numClasses += 1
-                        gradeLine.append(currentLine)
+                    #else:
+                        #i found a set of grades!
+                        #print '\t~~~~~~~~~~ your grades! begin ~~~~~~~~~~'
+                    numClasses += 1
+                    gradeLine.append(currentLine)
                 currentLine += 1
                 
                 
                 #some fancy printouts to locate grade location
                 lineIndex = 0
-                
                 for word in line.split('\t'):
-                    '''
-                    if len(line.split('\t')) == 7 and line.split('\t')[0].lower() != 'call#':
+                    #if len(line.split('\t')) == 7 and line.split('\t')[0].lower() != 'call#':
                         #print '\t~\tLine Index', lineIndex, ': ', word
-                    else:
+                    #else:
                         #print '\t\tLine Index', lineIndex, ': ', word
-                        '''
                     lineIndex += 1
-                if len(line.split('\t')) == 7:
-                    if line.split('\t')[0].lower() != 'call#':
+                #if len(line.split('\t')) == 7:
+                    #if line.split('\t')[0].lower() != 'call#':
                         #print '\t~~~~~~~~~~ your grades! ends ~~~~~~~~~~ \n'
-            gradeInput.seek(0)
+                gradeInput.seek(0)
     
     #print '\n\n\n\n'
     #classDpt list stores the unique departments in order of appearance
@@ -297,6 +296,6 @@ class SampleApp(tk.Tk):
         print self.entry.get()
         tkMessageBox.showinfo("Tkinter Entry Widget", guiInput())
 
-textFileInput()
+#textFileInput()
 app = SampleApp()
 app.mainloop()
