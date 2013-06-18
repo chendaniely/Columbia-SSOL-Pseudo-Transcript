@@ -86,6 +86,7 @@ def guiInput():
     
     allPoints = []
     allGrades = []
+    allGradesConvert = []
     
     for lineNum in gradeLine:
         line = linecache.getline('input.txt', lineNum)
