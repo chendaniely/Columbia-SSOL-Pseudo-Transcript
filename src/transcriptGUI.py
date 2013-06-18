@@ -5,6 +5,7 @@ Created on Jun 18, 2013
 '''
 import linecache
 import Tkinter as tk
+import sys
 import tkMessageBox
 #import ScrolledText
 
@@ -110,20 +111,42 @@ def guiInput():
    
     calculateGpa(allPoints,allGrades)
 
-class SampleApp(tk.Tk):
+class GpaApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
-        self.entry = tk.Entry(self)
-        self.button = tk.Button(self, text="Get", command=self.on_button)
-        self.button.pack()
+        
+        scrollbar = tk.Scrollbar(self)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        self.entry = tk.Text(self)
         self.entry.pack()
+        
+        self.entry.config(yscrollcommand=scrollbar.set)
+        scrollbar.config(command=self.entry.yview)
+        
+        self.L1 = tk.Label(text="Please Paste in SSOL GPA Page")
+        self.L1.pack(side = tk.TOP)
+        
+        self.button = tk.Button(self, text="Get", command=self.on_button)
+        self.button.pack(side = tk.RIGHT)
+        
+        self.buttonClose = tk.Button(self, text="Close", command=self.destroy)
+        self.buttonClose.pack(side = tk.RIGHT)
+
+        self.output = tk.Text(self)
+        self.output.pack()
+        
+        sys.stdout = self
+
 
     def on_button(self):
-        #global self.entry 
         with open('outputGUI.txt', 'w') as f:
             f.write(self.entry.get())
         print self.entry.get()
         tkMessageBox.showinfo("Tkinter Entry Widget", guiInput())
+        
+        self.destroy()
+    
 
-app = SampleApp()
+app = GpaApp()
 app.mainloop()
