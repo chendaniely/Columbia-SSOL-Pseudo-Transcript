@@ -5,8 +5,10 @@ Created on May 22, 2013
 '''
 import linecache
 
-#takes a list of credit points and letter grades and calculates the GPA for those pairs
-#assumes point-grade pair are in the same index of the 2 lists
+'''
+takes a list of credit points and letter grades and calculates the GPA for those pairs
+assumes point-grade pair are in the same index of the 2 lists
+'''
 def calculateGpa (points, grades):
     totalPoints = 0
     gradePoints = 0
@@ -26,7 +28,9 @@ def calculateGpa (points, grades):
     print 'gpa = ', gpa
     return gpa
 
-#converts a letter grade into a number for calculation
+'''
+converts a letter grade into a number for calculation
+'''
 def letter2number (letter):
     letterGrade = str(letter).lower()
     #print 'letter2number: input received = ', letterGrade
@@ -55,8 +59,15 @@ def letter2number (letter):
     else:
         return -1
         print 'letter2number: I did not program for a letter grade'
-
+def summary():
+    global currentLine, numClasses, numHeaders, numClassDpt, gradeLine
+    print '\n\nSummary:'
+    print '{:2d} line(s) read from input.txt'.format(currentLine-1)
+    print 'you have taken {:2d} class(es) from {:2d} departments'.format(numClasses-numHeaders, numClassDpt)
+    print 'grades found on lines:', gradeLine
+    
 def textFileInput():
+    global currentLine, numClasses, numHeaders, numClassDpt, gradeLine
     #headingTitle = ['callNum', 'dept', 'number', 'section', 'points', 'title', 'grade']
     validLetterGrades = ['a+','a','a-','b+','b','b-','c+','c','c-','f']
     '''
@@ -140,106 +151,11 @@ def textFileInput():
             
     print 'final classDpt: ', classDpt
     
-    print '\n\nSummary:'
-    print '{:2d} line(s) read from input.txt'.format(currentLine-1)
-    print 'you have taken {:2d} class(es) from {:2d} departments'.format(numClasses-numHeaders, numClassDpt)
-    print 'grades found on lines:', gradeLine
-    
-    
-    '''
-    print '\n=========\n'
-    
-    points = [1.50,5.00]
-    grades = ['B-', 'B+']
-    print 'letter2number index 0: ', letter2number(grades[0])
-    
-    print '\n=========\n'
-    
-    print 'testing calculateGPA using points = {} and grades = {}'.format(points, grades)
-    calculateGpa(points, grades)
-    
-    print '\n=========\n'
-    
-    print 'testing overall gpa calculations'
-    print allPoints
-    print allGrades
-    print allGradesConvert #do not need
-    
-    '''
+    summary()
+
     
     calculateGpa(allPoints,allGrades)
 
 
-def guiInput():
-    validLetterGrades = ['a+','a','a-','b+','b','b-','c+','c','c-','f']
+textFileInput()
 
-    with open('outputGUI.txt') as gradeInput:
-        with open('log.txt', 'w') as log:
-            currentLine = 1
-            numClasses = 0
-            numHeaders = 0
-            gradeLine = []
-            
-            for line in gradeInput:
-                if len(line.split('\t')) == 7:
-                    numClasses += 1
-                    gradeLine.append(currentLine)
-                currentLine += 1
-
-                lineIndex = 0
-                
-                for word in line.split('\t'):
-                    lineIndex += 1
-                gradeInput.seek(0)
-    
-    classDpt = []
-    numClassDpt = 1
-    
-    allPoints = []
-    allGrades = []
-    allGradesConvert = []
-    
-    for lineNum in gradeLine:
-        line = linecache.getline('input.txt', lineNum)
-        if linecache.getline('input.txt', lineNum).split('\t')[1] not in classDpt:
-            numClassDpt += 1
-            classDpt.append(linecache.getline('input.txt', lineNum).split('\t')[1])
-            
-        if line.split('\t')[6].rstrip('\n').lower() in validLetterGrades:
-            allPoints.append(line.split('\t')[4])
-            allGrades.append(line.split('\t')[6].rstrip('\n'))
-            allGradesConvert.append(letter2number(line.split('\t')[6].rstrip('\n')))
-        else:
-            continue
-                
-    print '\n\nSummary:'
-    print '{:2d} line(s) read from input.txt'.format(currentLine-1)
-    print 'you have taken {:2d} class(es) from {:2d} departments'.format(numClasses-numHeaders, numClassDpt)
-    print 'grades found on lines:', gradeLine
-    print allPoints
-    print allGrades
-   
-    calculateGpa(allPoints,allGrades)
-
-import Tkinter as tk
-import tkMessageBox
-#import ScrolledText
-
-class SampleApp(tk.Tk):
-    def __init__(self):
-        tk.Tk.__init__(self)
-        self.entry = tk.Entry(self)
-        self.button = tk.Button(self, text="Get", command=self.on_button)
-        self.button.pack()
-        self.entry.pack()
-
-    def on_button(self):
-        #global self.entry 
-        with open('outputGUI.txt', 'w') as f:
-            f.write(self.entry.get())
-        print self.entry.get()
-        tkMessageBox.showinfo("Tkinter Entry Widget", guiInput())
-
-#textFileInput()
-app = SampleApp()
-app.mainloop()
