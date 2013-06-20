@@ -10,7 +10,6 @@ takes a list of credit points and letter grades and calculates the GPA for those
 assumes point-grade pair are in the same index of the 2 lists
 '''
 def calculateGpa (points, grades):
-    
     totalPoints = 0
     gradePoints = 0
     gpa = -1
@@ -28,7 +27,45 @@ def calculateGpa (points, grades):
     gpa = gradePoints/totalPoints
     print 'gpa = ', gpa
     return gpa
-
+'''
+same as calculateGpa but no verbose print statements
+'''
+def calculateGpaQuiet (points, grades):
+    totalPoints = 0
+    gradePoints = 0
+    gpa = -1
+    length = int(len(points))
+    if len(points) != len(grades):
+        print 'the number of points does not equal the number of grades!'
+    
+    for index in range(length):
+        #print 'calculateGPA: index={} points={}, letter2number={}'.format(index, points[index], letter2number(grades[index]))
+        totalPoints += float(points[index])
+        #print 'points * grade = ', float(points[index])*float(letter2number(grades[index]))
+        gradePoints = gradePoints + float(points[index])*float(letter2number(grades[index]))
+    print 'totalPoints = ', totalPoints
+    print 'gradePoints = ', gradePoints
+    gpa = gradePoints/totalPoints
+    print 'gpa = ', gpa
+    return gpa
+'''
+takes a line number and an index to make a list, 
+one for points, one for grades
+can be used to pass into the GPA function
+i = 4 = points
+i = 6 = grades
+'''
+def linesToPointGrades(lines, i):
+    print 'i am here!'
+    pointOrGradeList = []
+    for lineWithGrades in lines:
+        line = linecache.getline('input.txt', lineWithGrades)
+        if i == 4:
+            pointOrGradeList.append(line.split('\t')[i])
+        if i ==6:
+            pointOrGradeList.append(letter2number(line.split('\t')[i].rstrip('\n')))
+    print pointOrGradeList
+    return pointOrGradeList
 '''
 converts a letter grade into a number for calculation
 '''
@@ -61,14 +98,50 @@ def letter2number (letter):
         return -1
         print 'letter2number: I did not program for a letter grade'
 def summary():
-    global currentLine, numClasses, numHeaders, numClassDpt, gradeLine
+    global currentLine, numClasses, numHeaders, numClassDpt, gradeLine, semesterMarkerLine
     print '\n\nSummary:'
     print '{:2d} line(s) read from input.txt'.format(currentLine-1)
     print 'you have taken {:2d} class(es) from {:2d} departments'.format(numClasses-numHeaders, numClassDpt)
+    print 'semester markers found on lines:', semesterMarkerLine
     print 'grades found on lines:', gradeLine
+
+def reallyUnofficialTranscript():
+    global semesterMarkerLine
+    headingTitle = ['Call Number', 'Department', 'Class', 'Section', 'Credits', 'Title', 'Grade']
+    print "########################################"
+    print "Really Unofficial Transcript"
+    print "########################################"
+    
+    print 'semesterMarkerLine',semesterMarkerLine
+    print 'gradeLine', gradeLine
+    print semesterMarkerLine[0]
+    semesterMarkerLine.append(1000000)
+    #todo fix this area to get grade line after semestermarkerline but before next semester marker line
+    semesterMarkerLineR = []
+    for reverse in sorted(semesterMarkerLine,reverse=True):
+        semesterMarkerLineR.append(reverse)
+    print 'semesterMarkerLineR',semesterMarkerLineR,semesterMarkerLineR[0],semesterMarkerLineR[1]
+    
+    print 'gradeLine', gradeLine.reverse()
+    print semesterMarkerLine[0]
+    
+    index = 0
+    for seasonLine in semesterMarkerLine:
+        semesterClassList = []
+        line = linecache.getline('input.txt', seasonLine)
+        print line #prints the semester information
+        print "{0[0]:11} | {0[1]:10} | {0[2]:5} | {0[3]:7} | {0[4]:7} | {0[5]:25} | {0[6]:5}".format(headingTitle)
+        
+        for grade in gradeLine:
+            line = linecache.getline('input.txt', grade)
+            print '{0[0]:11} | {0[1]:10} | {0[2]:5} | {0[3]:7} | {0[4]:7} | {0[5]:25} | {0[6]:5}'.format(line.split('\t'))
+            semesterClassList.append(grade)
+            index += 1
+        print semesterClassList
+        print "########################################"
     
 def textFileInput():
-    global currentLine, numClasses, numHeaders, numClassDpt, gradeLine
+    global currentLine, numClasses, numHeaders, numClassDpt, gradeLine, semesterMarkerLine
     #headingTitle = ['callNum', 'dept', 'number', 'section', 'points', 'title', 'grade']
     validLetterGrades = ['a+','a','a-','b+','b','b-','c+','c','c-','f']
     '''
@@ -84,6 +157,8 @@ def textFileInput():
         numClasses = 0
         numHeaders = 0
         gradeLine = []
+        semesterMarkerLine = []
+        semesters = ["fall", "winter", "spring", "summer"]
         
         for line in gradeInput:
             #begin to look for where the grades are
@@ -97,6 +172,11 @@ def textFileInput():
                     print '\t~~~~~~~~~~ your grades! begin ~~~~~~~~~~'
                     numClasses += 1
                     gradeLine.append(currentLine)
+            if len(line.split('\t')) == 1:
+                for season in semesters:
+                    if season in line.split('\t')[0].lower():
+                        print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+                        semesterMarkerLine.append(currentLine)
             currentLine += 1
             
             
@@ -151,9 +231,11 @@ def textFileInput():
             
     print 'final classDpt: ', classDpt
     
-    summary()
-
+    reallyUnofficialTranscript()
     
+    summary()
+    
+    print "\n OVERALL GPA CALCULATION"
     calculateGpa(allPoints,allGrades)
     
 
