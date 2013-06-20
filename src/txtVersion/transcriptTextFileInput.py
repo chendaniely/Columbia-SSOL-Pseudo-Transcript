@@ -10,6 +10,7 @@ takes a list of credit points and letter grades and calculates the GPA for those
 assumes point-grade pair are in the same index of the 2 lists
 '''
 def calculateGpa (points, grades):
+    
     totalPoints = 0
     gradePoints = 0
     gpa = -1
@@ -79,39 +80,38 @@ def textFileInput():
             Call#    Dept    Number    Section    Points    Title    Grade
     '''
     with open('input.txt') as gradeInput:
-        with open('log.txt', 'w') as log:
-            currentLine = 1
-            numClasses = 0
-            numHeaders = 0
-            gradeLine = []
+        currentLine = 1
+        numClasses = 0
+        numHeaders = 0
+        gradeLine = []
+        
+        for line in gradeInput:
+            #begin to look for where the grades are
+            print 'Line ', currentLine, ':\t', line, '\tline breakdown by tab delimitation:'
+            print '\tlength: ', len(line.split('\t'))
+            #all the grade grade lines have 7 parts separated by tabs, can be a header or a grade
+            if len(line.split('\t')) == 7:
+                if line.split('\t')[0].lower() == 'call#': #this is a header
+                    print '\tthis is header'
+                else: #i found a set of grades!
+                    print '\t~~~~~~~~~~ your grades! begin ~~~~~~~~~~'
+                    numClasses += 1
+                    gradeLine.append(currentLine)
+            currentLine += 1
             
-            for line in gradeInput:
-                #begin to look for where the grades are
-                print 'Line ', currentLine, ':\t', line, '\tline breakdown by tab delimitation:'
-                print '\tlength: ', len(line.split('\t'))
-                #all the grade grade lines have 7 parts separated by tabs, can be a header or a grade
-                if len(line.split('\t')) == 7:
-                    if line.split('\t')[0].lower() == 'call#': #this is a header
-                        print '\tthis is header'
-                    else: #i found a set of grades!
-                        print '\t~~~~~~~~~~ your grades! begin ~~~~~~~~~~'
-                        numClasses += 1
-                        gradeLine.append(currentLine)
-                currentLine += 1
-                
-                
-                #some fancy printouts to locate grade location
-                lineIndex = 0
-                for word in line.split('\t'):
-                    if len(line.split('\t')) == 7 and line.split('\t')[0].lower() != 'call#':
-                        print '\t~\tLine Index', lineIndex, ': ', word
-                    else:
-                        print '\t\tLine Index', lineIndex, ': ', word
-                    lineIndex += 1
-                if len(line.split('\t')) == 7:
-                    if line.split('\t')[0].lower() != 'call#':
-                        print '\t~~~~~~~~~~ your grades! ends ~~~~~~~~~~ \n'
-            gradeInput.seek(0)
+            
+            #some fancy printouts to locate grade location
+            lineIndex = 0
+            for word in line.split('\t'):
+                if len(line.split('\t')) == 7 and line.split('\t')[0].lower() != 'call#':
+                    print '\t~\tLine Index', lineIndex, ': ', word
+                else:
+                    print '\t\tLine Index', lineIndex, ': ', word
+                lineIndex += 1
+            if len(line.split('\t')) == 7:
+                if line.split('\t')[0].lower() != 'call#':
+                    print '\t~~~~~~~~~~ your grades! ends ~~~~~~~~~~ \n'
+        gradeInput.seek(0)
     
     print '\n\n\n\n'
     #classDpt list stores the unique departments in order of appearance
@@ -155,7 +155,7 @@ def textFileInput():
 
     
     calculateGpa(allPoints,allGrades)
-
+    
 
 textFileInput()
 
